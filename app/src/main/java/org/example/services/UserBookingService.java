@@ -20,7 +20,7 @@ public class UserBookingService {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    private static final String USERS_PATH = "../localDb/users.json";
+    private static final String USERS_PATH = "app/src/main/java/org/example/localDb/users.json";
 
     public UserBookingService(User user1) throws IOException {
         this.user = user1;
@@ -30,9 +30,9 @@ public class UserBookingService {
         loadUsers();
     }
 
-    public List<User> loadUsers() throws IOException{
+    public void loadUsers() throws IOException{
         File users = new File(USERS_PATH);
-        return objectMapper.readValue(users, new TypeReference<List<User>>() {
+        userList = objectMapper.readValue(users, new TypeReference<List<User>>() {
         });
     }
 

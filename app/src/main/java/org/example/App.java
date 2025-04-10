@@ -26,7 +26,7 @@ public class App {
         try {
             userBookingService = new UserBookingService();
         }catch(IOException ex){
-            System.out.println("There is something wrong");
+            System.out.println("There is something wrong: " + ex.getMessage());
             return;
         }
 
