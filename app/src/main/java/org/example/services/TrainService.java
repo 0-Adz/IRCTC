@@ -7,7 +7,10 @@ import org.example.entities.Train;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class TrainService {
 
@@ -41,5 +44,37 @@ public class TrainService {
         int destinationInd =  stationOrder.indexOf(destinationStation.toLowerCase());
 
         return sourceInd != -1 && destinationInd != -1 && sourceInd < destinationInd;
+    }
+    public void addTrain(Train newTrain){
+        Optional<Train> existingTrain = trainList.stream()
+                .filter(train -> train.getTrainId().equalsIgnoreCase(newTrain.getTrainId()))
+                .findFirst();
+        if(existingTrain.isPresent()){
+            updateTrain(newTrain);
+        }
+        else{
+            trainList.add(newTrain);
+            saveTrainListToFile();
+        }
+    }
+    public void updateTrain(Train train){
+        OptionalInt index = IntStream.range(0, trainList.size())
+                .filter(i -> trainList.get(i).getTrainId().equalsIgnoreCase(train.getTrainId()))
+                .findFirst();
+        if(index.isPresent()){
+            trainList.set(index.getAsInt(), train);
+            saveTrainListToFile();
+        }
+        else{
+            addTrain(train);
+        }
+    }
+
+    private void saveTrainListToFile(){
+        try{
+            objectMapper.writeValue(new File(TRAINS_PATH), trainList);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

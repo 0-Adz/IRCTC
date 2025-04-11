@@ -59,7 +59,13 @@ public class UserBookingService {
     }
 
     public void fetchBooking(){
-        user.printTickets();
+        Optional<User> userFetched = userList.stream()
+                .filter(user1 -> {return user1.getName().equals(user.getName()) && UserServiceUtil.checkPassword(user.getPassword(),user1.getHashedPassword());})
+                .findFirst();
+        if(userFetched.isPresent()){
+            userFetched.get().printTickets();
+        }
+
     }
 
     public Boolean cancelBooking(String ticketId){
@@ -73,6 +79,31 @@ public class UserBookingService {
             return trainService.searchTrains(sourceStation, destinationStation);
         }catch(IOException ex){
             return new ArrayList<>();
+        }
+    }
+
+    public List<List<Integer>> fetchSeats(Train train){
+        return train.getSeats();
+    }
+    public Boolean bookTrainSeat(Train trainSelectedForBooking, Integer row, Integer col){
+        try{
+            TrainService trainService = new TrainService();
+            List<List<Integer>> seats = trainSelectedForBooking.getSeats();
+            if(row >= 0 && row < seats.size() && col >= 0 && col < seats.get(row).size()){
+                if(seats.get(row).get(col) == 0){
+                    seats.get(row).set(col,1);
+                    trainSelectedForBooking.setSeats(seats);
+                    trainService.addTrain(trainSelectedForBooking);
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }else{
+                return false;
+            }
+        }catch(IOException ex){
+            return Boolean.FALSE;
         }
     }
 }
