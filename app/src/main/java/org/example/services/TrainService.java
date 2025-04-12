@@ -16,7 +16,7 @@ public class TrainService {
 
     private Train train;
     private List<Train> trainList;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private static final String TRAINS_PATH = "app/src/main/java/org/example/localDb/trains.json";
 
     public TrainService() throws IOException{
@@ -30,7 +30,7 @@ public class TrainService {
 
     public void loadTrains() throws IOException{
         File trains = new File(TRAINS_PATH);
-        trainList = objectMapper.readValue(trains, new TypeReference<List<Train>>() {
+        trainList = objectMapper.readValue(trains, new TypeReference<>() {
         });
     }
 
